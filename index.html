@@ -2,10 +2,49 @@
 <html lang="ru">
 <head>
   <meta charset="utf-8">
-  <meta http-equiv="refresh" content="0;url=myfile.gif">
-  <title>Redirecting…</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Мой сайт — видео</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  Перенаправление... Если перенаправление не сработало, откройте <a href="myfile.gif">GIF</a>.
+  <header>
+    <h1>Мой сайт</h1>
+  </header>
+
+  <!-- Видео -->
+  <section class="video-wrapper">
+    <video
+      id="mainVideo"
+      class="responsive-video"
+      autoplay
+      muted
+      loop
+      playsinline
+      controls
+      poster="assets/poster.jpg"
+    >
+      <source src="пахом-сергей-пахомов.mp4" type="video/mp4">
+      Ваш браузер не поддерживает тег video. Скачайте видео:
+      <a href="пахом-сергей-пахомов.mp4">пахом-сергей-пахомов.mp4</a>
+    </video>
+  </section>
+
+  <script>
+    // Если браузер блокирует autoplay, можно попытаться запустить видео программно после взаимодействия:
+    document.addEventListener('DOMContentLoaded', function () {
+      const v = document.getElementById('mainVideo');
+      if (v) {
+        // Современные браузеры позволят автозапуск только если muted=true
+        v.muted = true;
+        const playPromise = v.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(function (error) {
+            // Автозапуск мог быть запрещён — можно показать подсказку пользователю
+            console.log('Автозапуск видео не сработал:', error);
+          });
+        }
+      }
+    });
+  </script>
 </body>
 </html>
