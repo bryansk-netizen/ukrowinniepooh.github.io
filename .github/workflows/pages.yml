@@ -1,0 +1,44 @@
+name: pages build and deployment
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      artifact-path: out
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Prepare output directory
+        run: |
+          rm -rf out
+          mkdir -p out
+          # Копируем все необходимые файлы в out; при необходимости подправьте список
+          cp -R README.md index.html css assets *.mp4 out || true
+
+      - name: Show out contents
+        run: |
+          echo "Files to be deployed:"
+          ls -la out || true
+
+      - name: Upload artifact for Pages
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: ./out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v1
