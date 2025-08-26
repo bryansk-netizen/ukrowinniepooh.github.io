@@ -7,15 +7,13 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <header>
-    <h1>Мой сайт</h1>
-  </header>
+  <!-- Убрали header с текстом -->
 
-  <!-- Видео -->
+  <!-- Видео во весь экран -->
   <section class="video-wrapper">
     <video
       id="mainVideo"
-      class="responsive-video"
+      class="fullscreen-video"
       autoplay
       muted
       loop
@@ -25,28 +23,44 @@
     >
       <source src="pakhom-sergey-pakhomov.mp4" type="video/mp4">
       Ваш браузер не поддерживает тег video. Скачайте видео:
-      <a href="pakhom-sergey-pakhomov.mp4">pakhom-sergey-pakhomov.mp4</a>
+      <a href="pakhom-sergey-pakhomov.mp4">Скачать видео</a>
     </video>
+
+    <!-- Необязательная кнопка — перейти в режим "истинного" полноэкранного браузера -->
+    <button id="enterFs" class="fs-button" aria-hidden="true">Полноэкранный режим</button>
   </section>
 
   <script>
-    // Если браузер блокирует autoplay, можно попытаться запустить видео программно после взаимодействия:
     document.addEventListener('DOMContentLoaded', function () {
       const v = document.getElementById('mainVideo');
       if (v) {
-        // Современные браузеры позволят автозапуск только если muted=true
         v.muted = true;
         const playPromise = v.play();
         if (playPromise !== undefined) {
           playPromise.catch(function (error) {
-            // Автозапуск мог быть запрещён — можно показать подсказку пользователю
             console.log('Автозапуск видео не сработал:', error);
           });
         }
+      }
+
+      // Кнопка для перевода в настоящий fullscreen (API Fullscreen)
+      const btn = document.getElementById('enterFs');
+      if (btn) {
+        btn.addEventListener('click', async function () {
+          try {
+            if (document.fullscreenElement) {
+              await document.exitFullscreen();
+              btn.textContent = 'Полноэкранный режим';
+            } else {
+              await document.documentElement.requestFullscreen();
+              btn.textContent = 'Выйти из полноэкранного режима';
+            }
+          } catch (e) {
+            console.warn('Не удалось переключить полноэкранный режим:', e);
+          }
+        });
       }
     });
   </script>
 </body>
 </html>
-
-
